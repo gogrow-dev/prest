@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Prest do
-  it 'has a version number' do
-    expect(Prest::VERSION).not_to be nil
-  end
-
+RSpec.describe Prest::Client do
   before do
     %i[get post put patch delete].each do |http_method|
       allow(HTTParty).to receive(http_method).and_return(double(:response, body: '{}'))

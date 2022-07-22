@@ -1,5 +1,10 @@
 # Prest
 
+[![Gem Version](https://badge.fury.io/rb/prest.svg)](https://badge.fury.io/rb/prest)
+[![Ruby](https://github.com/gogrow-dev/prest/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/gogrow-dev/prest/actions/workflows/main.yml)
+[![Maintainability](https://api.codeclimate.com/v1/badges/f81b2e00be4d8eaa5e81/maintainability)](https://codeclimate.com/github/gogrow-dev/prest/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/f81b2e00be4d8eaa5e81/test_coverage)](https://codeclimate.com/github/gogrow-dev/prest/test_coverage)
+
 Programmaticcally communicate with any REST API.
 
 ## Installation
