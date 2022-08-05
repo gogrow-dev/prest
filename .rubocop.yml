@@ -1,10 +1,11 @@
 AllCops:
-  TargetRubyVersion: 2.7
+  TargetRubyVersion: 2.7.0
   NewCops: disable
 
 Metrics/BlockLength:
   Exclude:
     - "spec/**/*"
+
 Style/StringLiterals:
   Enabled: true
   EnforcedStyle: single_quotes

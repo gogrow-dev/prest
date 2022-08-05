@@ -1,5 +1,12 @@
 # frozen_string_literal: true
 
+require 'simplecov'
+
+SimpleCov.start do
+  track_files '/lib/**/*.rb'
+  add_filter '/spec/'
+end
+
 require 'prest'
 
 RSpec.configure do |config|
