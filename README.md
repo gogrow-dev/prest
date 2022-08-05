@@ -74,10 +74,33 @@ response.body # returns the body of the response
 ```ruby
 # app/services/github.rb
 class Github < Prest::Service
-  # optional
-  def new(param1, param2)
-    @param1 = param1
-    @param2 = param2
+  private
+
+  def base_uri
+    'https://api.github.com'
+  end
+
+  def options
+    {
+      headers: {
+        'access_token' => 'xxxyyyzzz'
+      }
+    }
+  end
+end
+
+# Then, you can use it like this anywhere in your app:
+
+Github.users('juan-apa').pulls.get
+```
+
+You can also define an initializer to pass values in runtime to your service:
+
+```ruby
+# app/services/github.rb
+class Github < Prest::Service
+  def initialize(organization)
+    @organization = organization
   end
 
   private
@@ -86,16 +109,19 @@ class Github < Prest::Service
     'https://api.github.com'
   end
 
-  def headers
+  def options
     {
-      'access_token' => 'xxxyyyzzz'
+      headers: {
+        'access_token' => 'xxxyyyzzz',
+        'org' => @organization
+      }
     }
   end
 end
 
 # Then, you can use it like this anywhere in your app:
 
-Github.new.users('juan-apa').pulls.get
+Github.new('gogrow-dev').users.get
 ```
 
 ## Development
