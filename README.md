@@ -73,14 +73,18 @@ response.body # returns the body of the response
 
 ```ruby
 # app/services/github.rb
-class Github
-  BASE_URL = 'https://api.github.com'
-
-  def new
-    Prest::Client.new(BASE_URL, { headers: headers })
+class Github < Prest::Service
+  # optional
+  def new(param1, param2)
+    @param1 = param1
+    @param2 = param2
   end
 
   private
+
+  def base_uri
+    'https://api.github.com'
+  end
 
   def headers
     {
