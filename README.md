@@ -39,6 +39,10 @@ Prest::Client.new('https://example.com/api').users(name: 'Juan', created_at: '20
 Prest::Client.new('https://example.com/api').users(2).pulls(1).comments.get
 # This translates to making a GET https://example.com/api/users/2/pulls/1/comments
 
+# To make requests to url which have a dash in it, use a double __
+Prest::Client.new('https://example.com/api').job__posts(1).get
+# This translates to making a GET https://example.com/api/job-posts/1
+
 # To pass headers to the request, pass them to the client constructor
 Prest::Client.new('https://example.com/api', { headers: { 'Authorization' => 'Bearer Token xxxyyyzzz' } })
              .users

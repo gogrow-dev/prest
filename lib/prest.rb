@@ -41,7 +41,7 @@ module Prest
       arguments = args.join('/')
       parsed_args = arguments.empty? ? '' : "#{arguments}/"
       @query_params.merge!(kwargs)
-      @fragments << "#{fragment_name.tr("_", "-")}/#{parsed_args}"
+      @fragments << "#{fragment_name.gsub("__", "-")}/#{parsed_args}"
     end
 
     def headers

@@ -29,7 +29,15 @@ RSpec.describe Prest::Client do
     context 'when fragment contains an underscore' do
       subject { client.fragment_name }
 
-      it 'replaces underscores with hyphens' do
+      it 'creates a url with underscores' do
+        expect { subject }.to change { client.fragments }.to(['fragment_name/'])
+      end
+    end
+
+    context 'when fragment contains two consecutive underscores' do
+      subject { client.fragment__name }
+
+      it 'replaces them with hyphens' do
         expect { subject }.to change { client.fragments }.to(['fragment-name/'])
       end
     end
@@ -40,7 +48,7 @@ RSpec.describe Prest::Client do
 
       it 'adds the param to url' do
         subject
-        expect(client.fragments).to eq(["fragment-name/#{param}/", 'fragment/'])
+        expect(client.fragments).to eq(["fragment_name/#{param}/", 'fragment/'])
       end
     end
 
@@ -50,7 +58,7 @@ RSpec.describe Prest::Client do
 
       it 'does not add the param to the fragments' do
         subject
-        expect(client.fragments).to eq(['fragment-name/', 'fragment/'])
+        expect(client.fragments).to eq(['fragment_name/', 'fragment/'])
       end
 
       it 'adds the param to the query_params' do
@@ -90,7 +98,7 @@ RSpec.describe Prest::Client do
         subject { client.fragment_name(param: 'value').__send__(http_method) }
 
         it "calls HTTParty\##{http_method} with correct params" do
-          expect(HTTParty).to receive(http_method).with("#{base_uri}/fragment-name/?param=value", body: {},
+          expect(HTTParty).to receive(http_method).with("#{base_uri}/fragment_name/?param=value", body: {},
                                                                                                   headers: {})
           subject
         end
