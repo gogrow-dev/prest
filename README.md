@@ -5,7 +5,7 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/f81b2e00be4d8eaa5e81/maintainability)](https://codeclimate.com/github/gogrow-dev/prest/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/f81b2e00be4d8eaa5e81/test_coverage)](https://codeclimate.com/github/gogrow-dev/prest/test_coverage)
 
-Programmaticcally communicate with any REST API.
+Programmatically communicate with any REST API.
 
 ## Installation
 
@@ -52,6 +52,21 @@ Prest::Client.new('https://example.com/api', { headers: { 'Authorization' => 'Be
 Prest::Client.new('https://example.com/api', { headers: { 'Authorization' => 'Bearer Token xxxyyyzzz' } })
              .users
              .post(body: { username: 'juan-apa' })
+```
+
+### Accessing the response
+
+```ruby
+response = Prest::Client.new('https://example.com/api').users.get
+
+response[:users] # is equivalent to response.body[:users]
+# You can access the body directly from the response object
+
+response.successful? # is equivalent to response.status is between 200-299
+
+response.status # returns the status code of the response
+response.headers # returns the headers of the response
+response.body # returns the body of the response
 ```
 
 ### Rails service-like approach

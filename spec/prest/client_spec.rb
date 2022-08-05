@@ -1,9 +1,16 @@
 # frozen_string_literal: true
 
-RSpec.describe Prest::Client do
+RSpec.describe Prest do
+  let(:parsed_response) { {} }
+  let(:code) { 200 }
+  let(:headers) { {} }
+  let!(:response_mock) do
+    double(:response, code: code, parsed_response: parsed_response, headers: headers)
+  end
+
   before do
     %i[get post put patch delete].each do |http_method|
-      allow(HTTParty).to receive(http_method).and_return(double(:response, body: '{}'))
+      allow(HTTParty).to receive(http_method).and_return(response_mock)
     end
 
     # Add #fragments and #query_params to the instance of Prest::Client only in the tests.
@@ -83,6 +90,8 @@ RSpec.describe Prest::Client do
           expect(HTTParty).to receive(http_method).with("#{base_uri}/", body: {}, headers: options[:headers])
           subject
         end
+
+        include_examples 'returns a correct response'
       end
 
       context 'when body is passed' do
@@ -92,6 +101,8 @@ RSpec.describe Prest::Client do
           expect(HTTParty).to receive(http_method).with("#{base_uri}/", body: body, headers: {})
           subject
         end
+
+        include_examples 'returns a correct response'
       end
 
       context 'when query params are passed' do
@@ -101,6 +112,23 @@ RSpec.describe Prest::Client do
           expect(HTTParty).to receive(http_method).with("#{base_uri}/fragment_name/?param=value", body: {},
                                                                                                   headers: {})
           subject
+        end
+
+        include_examples 'returns a correct response'
+      end
+
+      describe 'accessing the response params' do
+        let!(:parsed_response) { { key: 'value' } }
+        let!(:headers) { { 'Content-Type' => 'application/json' } }
+
+        include_examples 'returns a correct response'
+
+        include_examples 'forwards methods to httparty\'s response'
+
+        context 'when the response is not successful' do
+          let!(:code) { 400 }
+
+          include_examples 'forwards methods to httparty\'s response'
         end
       end
     end

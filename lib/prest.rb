@@ -2,6 +2,7 @@
 
 require 'httparty'
 require_relative 'prest/version'
+require_relative 'prest/response'
 
 module Prest
   class Error < StandardError; end
@@ -34,7 +35,10 @@ module Prest
     private
 
     def execute_query(http_method, body: {})
-      ::HTTParty.send(http_method, build_url, headers: headers, body: body)
+      res = ::HTTParty.send(http_method, build_url, headers: headers, body: body)
+      ::Prest::Response.new(res.code, res.parsed_response, res.headers)
+    rescue ::HTTParty::ResponseError => e
+      raise Error, e.message
     end
 
     def chain_fragment(fragment_name, *args, **kwargs)
