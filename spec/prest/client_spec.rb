@@ -133,4 +133,39 @@ RSpec.describe Prest do
       end
     end
   end
+
+  %i[get! post! put! patch! delete!].each do |dangerous_http_method|
+    describe "\##{dangerous_http_method}" do
+      let(:options) { {} }
+      let(:http_method) { dangerous_http_method.to_s[0..-2] }
+      let(:client) { Prest::Client.new(base_uri, options) }
+      let(:base_uri) { 'https://api.example.com' }
+      let(:body) { {} }
+
+      subject { client.__send__(dangerous_http_method, body: body) }
+
+      context 'when the request is successful' do
+        let!(:parsed_response) { { key: 'value' } }
+        let!(:headers) { { 'Content-Type' => 'application/json' } }
+        let!(:code) { 200 }
+
+        include_examples 'forwards methods to httparty\'s response'
+      end
+
+      context 'when the request is not successful' do
+        let(:code) { 500 }
+        let(:parsed_response) { { error: 'This is an error from the API' } }
+
+        it 'raises a ::Prest::Error' do
+          expect { subject }.to raise_error(::Prest::Error)
+        end
+
+        it 'returns the ::Prest::Response object in the error' do
+          expect { subject }.to raise_error(::Prest::Error) { |error|
+            expect(error.message).to eq(parsed_response.to_json)
+          }
+        end
+      end
+    end
+  end
 end

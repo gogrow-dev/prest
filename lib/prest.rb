@@ -10,7 +10,7 @@ module Prest
   # Main wrapper class for Prest. To use the gem, call:
   # Prest::Client.new('https://base_uri.com', { headers: { 'Authorization' => 'Bearer token' }})
   class Client < BasicObject
-    SUPPORTED_HTTP_VERBS = %i[get post put patch delete].freeze
+    SUPPORTED_HTTP_VERBS = %i[get post put patch delete get! post! put! patch! delete!].freeze
 
     def initialize(base_uri, options = {})
       @base_uri = base_uri
@@ -21,7 +21,11 @@ module Prest
 
     def method_missing(method, *args, **kwargs)
       if SUPPORTED_HTTP_VERBS.include?(method)
-        execute_query(method, **kwargs)
+        if method.to_s.end_with?('!')
+          execute_query!(method[0..-2], **kwargs)
+        else
+          execute_query(method, **kwargs)
+        end
       else
         chain_fragment(method.to_s, *args, **kwargs)
         self
@@ -38,7 +42,14 @@ module Prest
       res = ::HTTParty.send(http_method, build_url, headers: headers, body: body)
       ::Prest::Response.new(res.code, res.parsed_response, res.headers)
     rescue ::HTTParty::ResponseError => e
-      raise Error, e.message
+      ::Kernel.raise ::Prest::Error, e.message
+    end
+
+    def execute_query!(*args, **kwargs)
+      res = execute_query(*args, **kwargs)
+      ::Kernel.raise ::Prest::Error, res.body.to_json unless res.successful?
+
+      res
     end
 
     def chain_fragment(fragment_name, *args, **kwargs)
