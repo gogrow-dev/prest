@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    prest (0.1.3)
+    prest (0.1.4)
       httparty (~> 0.20.0)
 
 GEM
