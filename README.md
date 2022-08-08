@@ -54,6 +54,24 @@ Prest::Client.new('https://example.com/api', { headers: { 'Authorization' => 'Be
              .post(body: { username: 'juan-apa' })
 ```
 
+### Raising exceptions on failed HTTP requests
+
+An HTTP request is considered as failed when the status code is not between `100` and `299`.
+To automatically raise a `Prest::Error` when the HTTP request is not successful, use the bang methods (`get!`, `post!`, `put!`, `patch!` and `delete!` ).
+
+```ruby
+  # If for example the authorization headers are invalid, it will return an 401 status code.
+  # This call will raise a ::Prest::Error with the response as a json in the message.
+
+  begin
+    Prest::Client.new('https://example.com/api', { headers: { 'Authorization' => 'Bearer Token xxxyyyzzz' } })
+              .users
+              .get!
+  rescue Prest::Error => e
+    puts e.message # "{ error: \"Invalid auth credentials\" }"
+  end
+```
+
 ### Accessing the response
 
 ```ruby
