@@ -35,7 +35,7 @@ RSpec.describe 'Prest::Service' do
     end
 
     it 'returns a new valid instance of Prest::Client' do
-      expect(subject.fragments).to eq(%w[fragment1/ fragment2/ fragment3/])
+      expect(subject.fragments).to eq(%w[fragment1 fragment2 fragment3])
       expect(subject.base_uri).to eq(base_uri)
       expect(subject.options).to eq({
                                       headers: {
@@ -64,7 +64,7 @@ RSpec.describe 'Prest::Service' do
     end
 
     it 'returns a new valid instance of Prest::Client' do
-      expect(subject.fragments).to eq(%w[fragment1/ fragment2/ fragment3/])
+      expect(subject.fragments).to eq(%w[fragment1 fragment2 fragment3])
       expect(subject.base_uri).to eq(base_uri)
       expect(subject.options).to eq({
                                       headers: {
