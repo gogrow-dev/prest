@@ -26,7 +26,7 @@ RSpec.describe Prest do
 
     it 'adds each fragment to the fragments array' do
       subject
-      expect(client.fragments).to eq(%w[method1/ method2/ method3/])
+      expect(client.fragments).to eq(%w[method1 method2 method3])
     end
 
     it 'returns an instance of Prest::Client' do
@@ -34,10 +34,10 @@ RSpec.describe Prest do
     end
 
     context 'when fragment contains an underscore' do
-      subject { client.fragment_name }
+      subject { client.fragment_name.example }
 
       it 'creates a url with underscores' do
-        expect { subject }.to change { client.fragments }.to(['fragment_name/'])
+        expect { subject }.to change { client.fragments }.to(%w[fragment_name example])
       end
     end
 
@@ -45,7 +45,7 @@ RSpec.describe Prest do
       subject { client.fragment__name }
 
       it 'replaces them with hyphens' do
-        expect { subject }.to change { client.fragments }.to(['fragment-name/'])
+        expect { subject }.to change { client.fragments }.to(['fragment-name'])
       end
     end
 
@@ -55,7 +55,7 @@ RSpec.describe Prest do
 
       it 'adds the param to url' do
         subject
-        expect(client.fragments).to eq(["fragment_name/#{param}/", 'fragment/'])
+        expect(client.fragments).to eq(["fragment_name/#{param}", 'fragment'])
       end
     end
 
@@ -65,7 +65,7 @@ RSpec.describe Prest do
 
       it 'does not add the param to the fragments' do
         subject
-        expect(client.fragments).to eq(['fragment_name/', 'fragment/'])
+        expect(client.fragments).to eq(%w[fragment_name fragment])
       end
 
       it 'adds the param to the query_params' do
@@ -109,8 +109,8 @@ RSpec.describe Prest do
         subject { client.fragment_name(param: 'value').__send__(http_method) }
 
         it "calls HTTParty\##{http_method} with correct params" do
-          expect(HTTParty).to receive(http_method).with("#{base_uri}/fragment_name/?param=value", body: {},
-                                                                                                  headers: {})
+          expect(HTTParty).to receive(http_method).with("#{base_uri}/fragment_name?param=value", body: {},
+                                                                                                 headers: {})
           subject
         end
 
