@@ -94,6 +94,21 @@ RSpec.describe Prest do
         include_examples 'returns a correct response'
       end
 
+      context 'when json option is passed' do
+        let(:options) { { json: true } }
+
+        it "calls HTTParty\##{http_method} with Content-Type and Accept headers" do
+          expect(HTTParty).to receive(http_method).with("#{base_uri}/", body: {},
+                                                                        headers: {
+                                                                          'Content-Type' => 'application/json',
+                                                                          'Accept' => 'application/json'
+                                                                        })
+          subject
+        end
+
+        include_examples 'returns a correct response'
+      end
+
       context 'when body is passed' do
         let(:body) { { key: 'value' } }
 
