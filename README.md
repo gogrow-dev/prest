@@ -54,10 +54,23 @@ Prest::Client.new('https://example.com/api', { headers: { 'Authorization' => 'Be
              .post(body: { username: 'juan-apa' })
 ```
 
+### Automatically adding the json headers
+
+Because some API's need a `Content-Type: application/json` and/or `Accept: application/json` headers, there's a built in option that can be passed to the client to add those for you:
+
+```ruby
+Prest::Client.new('https://example.com/api', { json: true })
+             .users
+             .get
+# Makes a GET https://example.com/api/users with headers Content-Type: application/json and Accept: application/json
+```
+
+Note: The option will merge any other header you pass to the initializer.
+
 ### Raising exceptions on failed HTTP requests
 
 An HTTP request is considered as failed when the status code is not between `100` and `299`.
-To automatically raise a `Prest::Error` when the HTTP request is not successful, use the bang methods (`get!`, `post!`, `put!`, `patch!` and `delete!` ).
+To automatically raise a `Prest::Error` when the HTTP request is not successful, use the bang methods (`get!`, `post!`, `put!`, `patch!` and `delete!`).
 
 ```ruby
   # If for example the authorization headers are invalid, it will return an 401 status code.
