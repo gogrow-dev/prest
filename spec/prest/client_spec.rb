@@ -171,13 +171,31 @@ RSpec.describe Prest do
         let(:code) { 500 }
         let(:parsed_response) { { error: 'This is an error from the API' } }
 
-        it 'raises a ::Prest::Error' do
-          expect { subject }.to raise_error(::Prest::Error)
+        it 'raises a ::Prest::RequestError' do
+          expect { subject }.to raise_error(::Prest::RequestError)
         end
 
         it 'returns the ::Prest::Response object in the error' do
-          expect { subject }.to raise_error(::Prest::Error) { |error|
+          expect { subject }.to raise_error(::Prest::RequestError) { |error|
             expect(error.message).to eq(parsed_response.to_json)
+          }
+        end
+
+        it 'assigns the headers to the error' do
+          expect { subject }.to raise_error(::Prest::RequestError) { |error|
+            expect(error.headers).to eq(headers)
+          }
+        end
+
+        it 'assigns the status code to the error' do
+          expect { subject }.to raise_error(::Prest::RequestError) { |error|
+            expect(error.status).to eq(code)
+          }
+        end
+
+        it 'assigns the body to the error' do
+          expect { subject }.to raise_error(::Prest::RequestError) { |error|
+            expect(error.body).to eq(parsed_response.to_json)
           }
         end
       end

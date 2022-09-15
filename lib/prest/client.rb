@@ -36,12 +36,19 @@ module Prest
       res = ::HTTParty.send(http_method, build_url, headers: headers, body: body)
       ::Prest::Response.new(res.code, res.parsed_response, res.headers)
     rescue ::HTTParty::ResponseError => e
-      ::Kernel.raise ::Prest::Error, e.message
+      ::Kernel.raise(::Prest::RequestError.new(status: res.status,
+                                               body: res.parsed_response,
+                                               headers: res.headers), e.message)
     end
 
     def execute_query!(*args, **kwargs)
       res = execute_query(*args, **kwargs)
-      ::Kernel.raise ::Prest::Error, res.body.to_json unless res.successful?
+
+      unless res.successful?
+        ::Kernel.raise(::Prest::RequestError.new(status: res.status,
+                                                 body: res.body.to_json,
+                                                 headers: res.headers), res.body.to_json)
+      end
 
       res
     end
