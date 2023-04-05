@@ -56,7 +56,8 @@ module Prest
     def chain_fragment(fragment_name, *args, **kwargs)
       arguments = args.join('/')
       parsed_args = arguments.empty? ? '' : "/#{arguments}"
-      @query_params.merge!(kwargs)
+      extract_raw_query_params!(kwargs)
+      @query_params.merge!(kwargs.except(:__query_params))
       @fragments << "#{fragment_name.gsub("__", "-")}#{parsed_args}"
     end
 
@@ -69,13 +70,27 @@ module Prest
     def build_url
       path = @fragments.join('/')
 
-      stringified_params = ''
-      @query_params.to_a.each do |key_val|
-        stringified_params += "#{key_val[0]}=#{key_val[1]}&"
-      end
+      stringified_params = @query_params.to_a.map do |key_val|
+        key_val[0] == :__query_params ? key_val[1].join('&') : "#{key_val[0]}=#{key_val[1]}"
+      end.join('&')
 
-      stringified_params = stringified_params.empty? ? '' : "?#{stringified_params[0..-2]}"
+      stringified_params = stringified_params.empty? ? '' : "?#{stringified_params}"
       "#{@base_uri}/#{path}#{stringified_params}"
+    end
+
+    def array_wrap(obj)
+      obj.is_a?(::Array) ? obj : [obj]
+    end
+
+    def extract_raw_query_params!(kwargs)
+      return unless kwargs.key?(:__query_params)
+
+      raw_query_params = if @query_params[:__query_params].is_a?(::Array)
+                           @query_params[:__query_params] += array_wrap(kwargs[:__query_params])
+                         else
+                           array_wrap(kwargs[:__query_params])
+                         end
+      @query_params[:__query_params] = raw_query_params
     end
   end
 end
