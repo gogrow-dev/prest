@@ -54,6 +54,48 @@ Prest::Client.new('https://example.com/api', { headers: { 'Authorization' => 'Be
              .post(body: { username: 'juan-apa' })
 ```
 
+### Using raw/custom/special query parameters
+
+In ruby, duplicate keyword arguments on method calls are not accepted, so you **can not** do the following:
+
+```ruby
+Prest::Client.new('https://example.com/api').example(key: 1, key: 2).get
+# `key: 1` is overriden by `key: 2`;
+# produces: GET https://example.com/api/one/two?key=2
+```
+
+Because of this and other cases where formatting is very strict/unusual, you can pass a string which will not be formatted to the query parameters. To do this, use the following:
+
+```ruby
+# GET https://example.com/api/example?key=1&key2&other=value
+Prest::Client.new('https://example.com/api')
+             .example(__query_params: 'key=1&key=2', other: 'value')
+             .get
+```
+
+The string passed to the keyword argument `__query_params` will not be formatted, and passed as is.
+
+> **Warning**
+> `__query_params` is the only keyword argument that can be repeated across method calls:
+
+```ruby
+Prest::Client.new('https://example.com/api')
+             .one(key: '1')
+             .two(key: '2')
+             .get
+# Produces: GET https://example.com/api/one/two?key=2
+```
+
+However using `__query_params`:
+
+```ruby
+Prest::Client.new('https://example.com/api')
+             .one(__query_params: 'key=1')
+             .two(__query_params: 'key=2')
+             .get
+#Produces: GET https://example.com/api/one/two?key=1&key=2
+```
+
 ### Automatically adding the json headers
 
 Because some API's need a `Content-Type: application/json` and/or `Accept: application/json` headers, there's a built in option that can be passed to the client to add those for you:

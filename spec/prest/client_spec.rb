@@ -72,6 +72,16 @@ RSpec.describe Prest do
         subject
         expect(client.query_params).to eq(param: param)
       end
+
+      context 'when the __query_param key passed as a keyword argument' do
+        let(:param) { 'param[]=1&param[]=2' }
+        subject { client.fragment_name(__query_params: param).fragment }
+
+        it 'adds the param to the query_params' do
+          subject
+          expect(client.query_params).to eq(__query_params: [param])
+        end
+      end
     end
   end
 
@@ -121,11 +131,12 @@ RSpec.describe Prest do
       end
 
       context 'when query params are passed' do
-        subject { client.fragment_name(param: 'value').__send__(http_method) }
+        subject { client.fragment_name(param: 'value', __query_params: 'key=1&key=2').__send__(http_method) }
 
         it "calls HTTParty\##{http_method} with correct params" do
-          expect(HTTParty).to receive(http_method).with("#{base_uri}/fragment_name?param=value", body: {},
-                                                                                                 headers: {})
+          expect(HTTParty).to receive(http_method).with("#{base_uri}/fragment_name?key=1&key=2&param=value",
+                                                        body: {},
+                                                        headers: {})
           subject
         end
 
