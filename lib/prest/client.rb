@@ -57,7 +57,9 @@ module Prest
       arguments = args.join('/')
       parsed_args = arguments.empty? ? '' : "/#{arguments}"
       extract_raw_query_params!(kwargs)
-      @query_params.merge!(kwargs.except(:__query_params))
+      dup_kwargs = kwargs.dup
+      dup_kwargs.delete(:__query_params)
+      @query_params.merge!(dup_kwargs)
       @fragments << "#{fragment_name.gsub("__", "-")}#{parsed_args}"
     end
 
@@ -85,12 +87,11 @@ module Prest
     def extract_raw_query_params!(kwargs)
       return unless kwargs.key?(:__query_params)
 
-      raw_query_params = if @query_params[:__query_params].is_a?(::Array)
-                           @query_params[:__query_params] += array_wrap(kwargs[:__query_params])
-                         else
-                           array_wrap(kwargs[:__query_params])
-                         end
-      @query_params[:__query_params] = raw_query_params
+      @query_params[:__query_params] = if @query_params[:__query_params].is_a?(::Array)
+                                         @query_params[:__query_params] + array_wrap(kwargs[:__query_params])
+                                       else
+                                         array_wrap(kwargs[:__query_params])
+                                       end
     end
   end
 end
