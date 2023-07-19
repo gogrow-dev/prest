@@ -51,7 +51,7 @@ Prest::Client.new('https://example.com/api', { headers: { 'Authorization' => 'Be
 # To pass a body to the request, pass them to post/put/patch method as follows:
 Prest::Client.new('https://example.com/api', { headers: { 'Authorization' => 'Bearer Token xxxyyyzzz' } })
              .users
-             .post(body: { username: 'juan-apa' })
+             .post(body: { username: 'juan-apa' }.to_json)
 ```
 
 ### Using raw/custom/special query parameters
