@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+- Update `httparty` to use `0.20.0` or a higher version
+
 ## [0.1.0] - 2022-07-20
 
 - Initial release

@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     prest (0.1.8)
-      httparty (~> 0.20.0)
+      httparty (>= 0.20.0, < 0.23.0)
 
 GEM
   remote: https://rubygems.org/
@@ -61,6 +61,7 @@ GEM
 
 PLATFORMS
   arm64-darwin-21
+  x86_64-darwin-21
   x86_64-linux
 
 DEPENDENCIES
