@@ -7,6 +7,10 @@ on:
 
   pull_request:
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -26,9 +30,10 @@ jobs:
           bundler-cache: true
       - name: Lint with rubocop
         run: bundle exec rubocop
-      - name: Test & Publish code coverage
-        uses: paambaati/codeclimate-action@v3.0.0
-        env:
-          CC_TEST_REPORTER_ID: ${{secrets.CC_TEST_REPORTER_ID}}
+      - name: Test
+        run: bundle exec rspec
+      - name: Publish code coverage
+        uses: qltysh/qlty-action/coverage@v2
         with:
-          coverageCommand: bundle exec rspec
+          oidc: true
+          files: coverage/.resultset.json

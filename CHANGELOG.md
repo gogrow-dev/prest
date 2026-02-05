@@ -1,3 +1,8 @@
+## [0.1.10] - 2026-02-03
+
+- Update `httparty` to use `0.24.0` or a higher version
+- Migrate test coverage CI from Code Climate to Qlty
+
 ## [0.1.9] - 2024-10-28
 
 - Update `httparty` to use `0.20.0` or a higher version
